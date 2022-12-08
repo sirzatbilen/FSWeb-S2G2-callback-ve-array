@@ -133,7 +133,7 @@ function OrtalamaGolSayisi(finaller) {
 }
 console.log(OrtalamaGolSayisi(Finaller(fifaData)));
 
-
+/*-+ 
 
 /// EKSTRA ÇALIŞMALAR ///
 
@@ -143,11 +143,45 @@ console.log(OrtalamaGolSayisi(Finaller(fifaData)));
 	İpucu: "takım kısaltmaları" (team initials) için datada araştırma yapın!
 İpucu: `.reduce` Kullanın*/
 
-function UlkelerinKazanmaSayilari(/* kodlar buraya */) {
+console.clear();
+let takımKısaltması = [];
+fifaData.forEach(item => {
+	if (!takımKısaltması.includes(item["Home Team Initials"])) {
+		takımKısaltması.push(item["Home Team Initials"]);
+	}
+	if (!takımKısaltması.includes(item["Away Team Initials"])) {
+		takımKısaltması.push(item["Away Team Initials"]);
+	}
+})
+function UlkelerinKazanmaSayilari(gelenVeri,takımKısaltması) {
+	let kazananlar = gelenVeri.filter(match => match["Stage"] === "Final").map(array => {
+		if (array["Home Team Goals"] > array["Away Team Goals"]) {
+			return array["Home Team Initials"];
+		}
+		else if (array["Home Team Goals"] < array["Away Team Goals"]) {
+			return array["Away Team Initials"];
+		} else {
+			let kazananTakım = (array["Win conditions"]).split(" win")[0];
+			if (kazananTakım === array["Home Team Name"]) {
+				return array["Home Team Initials"];
+			} else {
+				return array["Away Team Initials"];
+			}
+		}
+	});
 	
-    /* kodlar buraya */
 	
-}
+		let kazanmaSayisi = kazananlar.reduce((total, kazanan) => {
+			if (kazanan in total){
+				 total[kazanan] += 1;
+			}else{
+				total[kazanan] = 1;
+			}
+			return total;
+		},{})
+		return kazanmaSayisi;
+	}
+console.log(UlkelerinKazanmaSayilari(fifaData, takımKısaltması));
 
 
 
